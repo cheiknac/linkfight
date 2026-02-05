@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "cheickna",
+  "license": "ISC",
+  "description": "Application pour Combattant amateur et pro",
+  "dependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11"
+  }
+}
