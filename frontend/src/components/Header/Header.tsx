@@ -1,5 +1,5 @@
 import './Header.scss'
-import Logo from '../../assets/react.svg'
+import Logo from '../../assets/Logo_linkfight.png'
 import { NavLink } from 'react-router'
 
 

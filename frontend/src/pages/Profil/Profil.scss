@@ -1,0 +1,32 @@
+#avatardBlock {
+    width: 25%;
+}
+
+#avatardBlock #profilPicture {
+    width: 100%;
+    min-height: 27rem;
+    background: #000;
+    border-radius: 1.5rem;
+    background: url('../../assets/AvatardProfil.png');
+    background-size: cover;
+}
+
+#avatardBlock #socialProfil {
+    width: 100%;
+    min-height: 9rem;
+    background: #0A4E68;
+    margin-top: -1.5rem;
+    position: relative;
+    z-index: -1000;
+    border-radius: 0rem 0rem 1.5rem 1.5rem;
+}
+
+#socialProfil {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#socialProfil img {
+    width: 2.3rem;
+}
