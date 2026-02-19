@@ -3,6 +3,8 @@ import Header from '../../components/Header/Header.tsx'
 import Snapchat from '../../assets/social/snapchat-brands.png'
 import Tiktok from '../../assets/social/tiktok-brands.png'
 import Insta from '../../assets/social/instagram-brands.png'
+import Trophy from '../../assets/trophy-solid.svg'
+import PhotoGallery from '../../assets/galleryphoto.png'
 
 
 export default function Profil() {
@@ -52,6 +54,43 @@ export default function Profil() {
 
 
             </div>
+
+
+            <div>
+                <h2>Palmarès</h2>
+                    <div className="expContainer">
+                        <h4>MMA – Championnat Régional</h4>
+                        <p><strong>Discipline : </strong>MMA</p>
+                        <p><strong>Lieu : </strong>Paris, France</p>
+                        <p><strong>Date : </strong>15 avril 2024</p>
+                        <p><strong>Résultat : </strong>1re place – Médaille d’or</p>
+
+                        <div>
+                            <img src={Trophy} width="100px" alt="instagram picto" />
+                        </div>
+                    </div>
+            </div>
+
+
+            <div>
+                <h2>Galerie photo</h2>
+                <div className="galleryContainer">
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                    <img src={PhotoGallery} alt="Photo gallery" />
+                </div>
+            </div>
+
+
+
+
+
+
+
+
         </div>
     )
 }

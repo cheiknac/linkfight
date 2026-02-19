@@ -47,3 +47,19 @@
     font-size: 6rem;
     font-weight: 900;
 }
+
+
+
+
+// Gallery Container
+
+.galleryContainer img {
+    width: 100%;
+}
+
+.galleryContainer {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    grid-gap: 2rem;
+}
