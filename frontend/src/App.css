@@ -1,6 +1,8 @@
 #root {
-  max-width: 90%;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
 }
 
+#footerContainer {
+  width: 100%;
+}

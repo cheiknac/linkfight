@@ -1,0 +1,25 @@
+
+#footerContainer {
+    width: 100%;
+    padding: 8rem 0rem 1rem 0rem;
+    background: #323232;
+    justify-content: space-between;
+}
+
+.footerNav {
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2rem;
+    margin: 0 auto;
+}
+
+.footerNav a {
+    color: #fff;
+}
+
+.credit {
+    margin-top: 8rem;
+    text-align: center;
+    color: #fff;
+}

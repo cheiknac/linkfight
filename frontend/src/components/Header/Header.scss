@@ -1,4 +1,6 @@
 #head {
+    width: 90%;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     padding: 1.5rem 2rem;
@@ -6,6 +8,7 @@
     border-radius: 1rem;
     border: 0.1rem solid #f1f1f1;
     align-items: center;
+    margin-top: 1rem;
 }
 
 #head img {
