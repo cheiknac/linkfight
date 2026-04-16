@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "db:connect": "psql -U linksfight754 -d linksfight754",
+    "db:create": "psql -U linksfight754 -d linksfight754 -f data/init.sql",
+    "db:seed": "psql -U linksfight754 -d linksfight754 -f data/seeding.sql",
+    "db:reset": "npm run db:create && run db:seed"
   },
   "keywords": [],
   "author": "cheickna",
@@ -16,6 +20,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "pg": "^8.20.0"
   }
 }

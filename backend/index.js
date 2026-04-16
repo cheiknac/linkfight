@@ -1,11 +1,15 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
+import mainRouter from './src/routers/index.js'
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-});
+app.use(express.json());
+
+app.use(cors());
+
+app.use(mainRouter);
 
 const port = process.env.PORT || 3000;
 const host_url = process.env.HOST_URL || 'localhost';
