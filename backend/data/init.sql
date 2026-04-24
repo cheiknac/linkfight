@@ -1,7 +1,9 @@
 
 BEGIN;
 
-TRUNCATE "images", "palmares", "sportprofil", "media", "sponsor", "users" RESTART IDENTITY CASCADE;
+DROP TABLE IF EXISTS "images", "palmares", "sportprofil", "media", "sponsor", "users" CASCADE;
+
+
 -- ============================================================
 -- init.sql — MLDLinks Fight
 -- ============================================================
@@ -9,11 +11,11 @@ TRUNCATE "images", "palmares", "sportprofil", "media", "sponsor", "users" RESTAR
 -- ============================================================
 -- TABLE : USER
 -- ============================================================
-CREATE TABLE IF NOT EXISTS "users" (
-    id            INTEGER GENERATED ALWAYS AS IDENTITY,
+CREATE TABLE "users" (
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     firstname     VARCHAR(50)        NOT NULL,
     lastname      VARCHAR(50)        NOT NULL,
-    email         VARCHAR(30) UNIQUE NOT NULL,
+    email         VARCHAR(250) UNIQUE NOT NULL,
     password      VARCHAR(255)        NOT NULL,
     type          VARCHAR(20) NOT NULL CHECK (type IN ('sponsor', 'media', 'sportif')),
     birthday      DATE,
@@ -31,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 -- ============================================================
 -- TABLE : SPORT_PROFIL
 -- ============================================================
-CREATE TABLE IF NOT EXISTS sportprofil (
+CREATE TABLE "sportprofil" (
     id_user      INT PRIMARY KEY REFERENCES "users"(id) ON DELETE CASCADE,
     biography    TEXT,
     categorie    VARCHAR(100),
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS sportprofil (
 -- ============================================================
 -- TABLE : PALMARES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS palmares (
+CREATE TABLE "palmares" (
     id            INTEGER GENERATED ALWAYS AS IDENTITY,
     id_sportprofil INT NOT NULL REFERENCES sportprofil(id_user) ON DELETE CASCADE,
     title         VARCHAR(50) NOT NULL,
@@ -64,7 +66,7 @@ CREATE TABLE IF NOT EXISTS palmares (
 -- ============================================================
 -- TABLE : IMAGES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS images (
+CREATE TABLE "images" (
     id_image      INTEGER GENERATED ALWAYS AS IDENTITY,
     id_sportprofil INT NOT NULL REFERENCES sportprofil(id_user) ON DELETE CASCADE,
     url           VARCHAR(500) NOT NULL,
@@ -74,17 +76,21 @@ CREATE TABLE IF NOT EXISTS images (
 -- ============================================================
 -- TABLE : SPONSOR
 -- ============================================================
-CREATE TABLE IF NOT EXISTS sponsor (
+CREATE TABLE "sponsor" (
     id_user      INT PRIMARY KEY REFERENCES "users"(id) ON DELETE CASCADE,
-    company_name VARCHAR(50) NOT NULL
+    company_name VARCHAR(50) NOT NULL,
+    position     VARCHAR(50) NOT NULL,
+    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$')
 );
  
 -- ============================================================
 -- TABLE : MEDIA
 -- ============================================================
-CREATE TABLE IF NOT EXISTS media (
+CREATE TABLE "media" (
     id_user    INT  NOT NULL REFERENCES "users"(id) ON DELETE CASCADE,
     media_name VARCHAR(50) NOT NULL,
+    position     VARCHAR(50) NOT NULL,
+    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$'),
     PRIMARY KEY (id_user, media_name)
 );
 

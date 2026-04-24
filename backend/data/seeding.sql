@@ -7,13 +7,13 @@ VALUES
 ('Jane', 'Smith', 'jane.smith@example.com', 'password456', 'media', '1992-05-15', '456 Oak Ave', '67890', 'Los Angeles', 'janesmith.jpg', true),
 ('Luc', 'Neo', 'lneo@example.com', 'password560', 'sportif', '1995-09-27', '10 rue du bac', '75000', 'Paris', 'jleo.jpg', true);
 
-INSERT INTO "sponsor" (id_user, company_name)
+INSERT INTO "sponsor" (id_user, company_name, position, phone)
 VALUES
-(1, 'Safran');
+(1, 'Safran', 'CEO', '0634345454');
 
-INSERT INTO "media" (id_user, media_name)
+INSERT INTO "media" (id_user, media_name, position, phone)
 VALUES
-(2, 'france24');
+(2, 'france24', 'marketing manager', '0634345454');
 
 INSERT INTO "sportprofil" (id_user, biography, categorie, discipline, club, zipcode_club, victory, defeat, weight, instagram, tiktok, snapchat)
 VALUES
