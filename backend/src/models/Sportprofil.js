@@ -7,6 +7,7 @@ const Sportprofil = sequelize.define(
         id_user: {
             type: DataTypes.INTEGER,
             primary: true,
+            autoIncrement: true,
             allowNull: false,
         },
 
