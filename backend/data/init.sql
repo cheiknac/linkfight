@@ -80,7 +80,8 @@ CREATE TABLE "sponsor" (
     id_user      INT PRIMARY KEY REFERENCES "users"(id) ON DELETE CASCADE,
     company_name VARCHAR(50) NOT NULL,
     position     VARCHAR(50) NOT NULL,
-    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$')
+    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$') NOT NULL,
+    website      VARCHAR(255),
 );
  
 -- ============================================================
@@ -90,7 +91,8 @@ CREATE TABLE "media" (
     id_user    INT  NOT NULL REFERENCES "users"(id) ON DELETE CASCADE,
     media_name VARCHAR(50) NOT NULL,
     position     VARCHAR(50) NOT NULL,
-    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$'),
+    phone        VARCHAR(20) CHECK (phone ~ '^[0-9+ ]+$'), NOT NULL,
+    website      VARCHAR(255),
     PRIMARY KEY (id_user, media_name)
 );
 
