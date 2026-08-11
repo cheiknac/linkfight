@@ -9,7 +9,7 @@ export default function Signup() {
             <Header />
             <div>
                 <div>
-                    <h1>Rejoingnez-nous</h1>
+                    <h1>Rejoignez-nous</h1>
                     <p>Veuillez remplir ce formulaire ci-dessous afin d'obtenir un compte</p>
                 </div>
 

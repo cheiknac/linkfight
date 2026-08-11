@@ -1,8 +1,11 @@
-import { Datatypes } from 'sequelize';
+import 'dotenv/config';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
-const Users = sequelize.define(
-    "Users",
+class Users extends Model {}
+
+Users.init(
+
     {
         id: {
             type: DataTypes.INTEGER,
@@ -21,11 +24,13 @@ const Users = sequelize.define(
             allowNull: false,
         },
 
-        email: DataTypes.STRING(250),
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true,
+        email: {
+            type: DataTypes.STRING(250),
+            allowNull: false,
+            unique: true,
+            validate: {
+                isEmail: true,
+            },
         },
 
         password: {
@@ -71,20 +76,23 @@ const Users = sequelize.define(
             defaultValue: false,
         },
 
-        create_at: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
 
-        update_at: {
+        updated_at: {
             type: DataTypes.DATE,
             allowNull: true,
         },
     },
     {
+        sequelize,
+        modelName: "Users",
         tableName: "users",
         timestamps: false,
-        underscored: true,
+        create_at: "created_at",
+        updateAt: "updated_at",
     }
 
 );

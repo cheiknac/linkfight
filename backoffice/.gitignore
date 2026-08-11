@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+backoffice/.dockerignore
 
 # Editor directories and files
 .vscode/*
