@@ -1,9 +1,8 @@
 import Sponsor from "../models/sponsor.js";
 
 const sponsorController = {
-
-    // show all sponsors
-    async getAllSponsors (req, res) {
+    // Get all sponsors
+    async getAllSponsors(req, res) {
         try {
             const sponsors = await Sponsor.findAll();
 
@@ -19,11 +18,10 @@ const sponsorController = {
                 message: 'Erreur serveur lors de la récupération des sponsors.',
             })
         }
-
     },
 
-    // Select sponsor by id
-    async getSponsorById (req, res) {
+    // Get sponsor by id
+    async getSponsorById(req, res) {
         try {
             const sponsor = await Sponsor.findByPk(req.params.id);
             
@@ -50,30 +48,30 @@ const sponsorController = {
     // Create a new sponsor
     async createSponsor(req, res) {
         try {
-            const { id_user, company_name, position, phone, website } = req.body;
+            const { company_name, position, phone, website } = req.body;
 
             const createdSponsor = await Sponsor.create({
-                id_user,
                 company_name,
                 position,
                 phone,
-                website,
+                website
             });
 
             res.status(201).json({
                 success: true,
                 data: createdSponsor,
+                message: 'Sponsor créé avec succès.',
             });
-        } catch (error) {
+        } catch(error) {
             console.error('Erreur lors de la création du sponsor:', error);
             res.status(500).json({
                 success: false,
                 message: 'Erreur serveur lors de la création du sponsor.',
-            });
+            })
         }
     },
 
-    // Update a sponsor
+    // Update a sponsor by id
     async updateSponsor(req, res) {
         try {
             const { id } = req.params;
@@ -88,27 +86,28 @@ const sponsorController = {
                 });
             }
 
-            sponsor.company_name = company_name || sponsor.company_name;
-            sponsor.position = position || sponsor.position;
-            sponsor.phone = phone || sponsor.phone;
-            sponsor.website = website || sponsor.website;
-
-            await sponsor.save();
+            await sponsor.update({
+                company_name,
+                position,
+                phone,
+                website,
+            });
 
             res.status(200).json({
                 success: true,
                 data: sponsor,
+                message: 'Sponsor mis à jour avec succès.',
             });
-        } catch (error) {
+        } catch(error) {
             console.error('Erreur lors de la mise à jour du sponsor:', error);
             res.status(500).json({
                 success: false,
                 message: 'Erreur serveur lors de la mise à jour du sponsor.',
-            });
+            })
         }
     },
-    
-    // Delete a sponsor
+
+    // Delete a sponsor by id
     async deleteSponsor(req, res) {
         try {
             const { id } = req.params;
@@ -128,12 +127,12 @@ const sponsorController = {
                 success: true,
                 message: 'Sponsor supprimé avec succès.',
             });
-        } catch (error) {
+        } catch(error) {
             console.error('Erreur lors de la suppression du sponsor:', error);
             res.status(500).json({
                 success: false,
                 message: 'Erreur serveur lors de la suppression du sponsor.',
-            });
+            })
         }
     },
 

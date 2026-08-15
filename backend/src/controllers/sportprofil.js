@@ -54,7 +54,7 @@ const sportprofilController = {
     // Create a new sport profile
     async createSportprofil(req, res) {
         try {
-            const { id_user, sport_name, position, phone, website } = req.body;
+            const { biography, categorie, discipline, club, zipcode_club, victory, defeat, weight, instagram, tiktok, snapchat } = req.body;
 
             const createdSportprofil = await Sportprofil.create({
                 biography,

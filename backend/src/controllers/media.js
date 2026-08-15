@@ -50,10 +50,9 @@ const mediaController = {
     // Create a new media
     async createMedia(req, res) {
         try {
-            const { id_user, media_name, position, phone, website } = req.body;
+            const { media_name, position, phone, website } = req.body;
 
             const createdMedia = await Media.create({
-                id_user,
                 media_name,
                 position,
                 phone,
@@ -76,7 +75,7 @@ const mediaController = {
     // Update media by id
     async updateMedia(req, res) {
         try {
-            const { id_user, media_name, position, phone, website } = req.body;
+            const { media_name, position, phone, website } = req.body;
 
             const media = await Media.findByPk(req.params.id);
 
@@ -88,7 +87,6 @@ const mediaController = {
             }
 
             await media.update({
-                id_user,
                 media_name,
                 position,
                 phone,

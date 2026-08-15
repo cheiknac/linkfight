@@ -47,7 +47,7 @@ const palmaresController = {
     // Create a new palmares
     async createPalmares(req, res) {
         try {
-            const { id_user, title, description, date } = req.body;
+            const { title, discipline, city, country, date, result } = req.body;
 
             const createdPalmares = await Palmares.create({
                 title,
@@ -76,7 +76,7 @@ const palmaresController = {
     async updatePalmares(req, res) {
         try {
             const { id } = req.params;
-            const { title, description, date } = req.body;
+            const { title, discipline, city, country, date, result } = req.body;
 
             const palmares = await Palmares.findByPk(id);
 
