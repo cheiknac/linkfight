@@ -1,17 +1,14 @@
+import 'dotenv/config';
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
 const sponsor = sequelize.define(
     "sponsor",
     {
-        id_user: {
+        id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: false,
-            references: {
-                model: 'users',
-                key: 'id',
-            },      
+            autoIncrement: false,    
             allowNull: false,
         },
         

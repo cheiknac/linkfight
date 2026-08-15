@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
@@ -8,10 +9,6 @@ const Media = sequelize.define(
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: false,
-            references: {
-                model: 'users',
-                key: 'id',
-            },
             allowNull: false,
         },
 

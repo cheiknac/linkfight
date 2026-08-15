@@ -22,4 +22,3 @@ import Images from './images.js';
 
   Sportprofil.hasMany(Images, { foreignKey: 'id_sportprofil', onDelete: 'CASCADE' });
   Images.belongsTo(Sportprofil, { foreignKey: 'id_sportprofil' });
-
