@@ -8,6 +8,7 @@ import sponsorRouter from './sponsor.js';
 import mediaRouter from './media.js';
 import sportProfilRouter from './sportprofil.js';
 import palmaresRouter from './palmares.js';
+import imagesRouter from './images.js';
 
 mainRouter.get('/', (req, res) => {
     res.send("Hello world my backend")
@@ -18,5 +19,6 @@ mainRouter.use(sponsorRouter);
 mainRouter.use(mediaRouter);
 mainRouter.use(sportProfilRouter);
 mainRouter.use(palmaresRouter);
+mainRouter.use(imagesRouter);
 
 export { mainRouter };

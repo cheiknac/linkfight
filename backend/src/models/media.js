@@ -1,9 +1,10 @@
 import 'dotenv/config';
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
-const Media = sequelize.define(
-    "Media",
+class Media extends Model {}
+
+Media.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -33,6 +34,8 @@ const Media = sequelize.define(
 
 },
     {
+        sequelize,
+        modelName: "Media",
         tableName: "media",
         timestamps: false,
     }

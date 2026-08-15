@@ -1,8 +1,11 @@
-import { DataTypes } from 'sequelize';
+import 'dotenv/config';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
-const Images = sequelize.define(
-    "Images",
+class Images extends Model {}
+
+Images.init(
+
     {
         id_sportprofil: {
             type: DataTypes.INTEGER,

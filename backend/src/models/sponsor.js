@@ -1,9 +1,11 @@
 import 'dotenv/config';
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
-const sponsor = sequelize.define(
-    "sponsor",
+class Sponsor extends Model {}
+
+Sponsor.init(
+
     {
         id: {
             type: DataTypes.INTEGER,
@@ -33,9 +35,11 @@ const sponsor = sequelize.define(
 
     },
     {
+        sequelize,
+        modelName: "Sponsor",
         tableName: "sponsor",
         timestamps: false,
     }
 );
 
-export default sponsor;
+export default Sponsor;
