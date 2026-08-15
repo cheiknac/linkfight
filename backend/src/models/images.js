@@ -21,6 +21,8 @@ const Images = sequelize.define(
         
 },
     {   
+        sequelize,
+        modelName: "Images",
         tableName: "images",
         timestamps: false,
     }

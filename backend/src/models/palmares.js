@@ -42,6 +42,9 @@ const Palmares = sequelize.define(
 
 },
     {
+        sequelize,
+        modelName: "Palmares",
+        tableName: "palmares",
         timestamps: false,
     }
 );
