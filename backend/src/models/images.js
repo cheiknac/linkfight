@@ -1,18 +1,16 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import sequelize from '../database/sequelize/client.js';
 
-const Palmares = sequelize.define(
-    "Palmares",
+const Images = sequelize.define(
+    "Images",
     {
-        id_image: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            allowNull: false,
-        },
-
         id_sportprofil: {
             type: DataTypes.INTEGER,
+            autoIncrement: false,
+            references: {
+                model: 'sportprofil',
+                key: 'id',
+            },
             allowNull: false,
         },
 
@@ -28,4 +26,4 @@ const Palmares = sequelize.define(
     }
 );
 
-export default Palmares;
+export default Images;

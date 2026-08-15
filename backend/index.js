@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { mainRouter } from './src/routers/index.js'
+import "./src/models/Index.js";
 
 const app = express();
 

@@ -1,13 +1,16 @@
-import { DataTypes } from 'sequelize';
+import 'dotenv/config';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database/sequelize/client.js';
 
-const Sportprofil = sequelize.define(
-    "Sportprofil",
+class Sportprofil extends Model {}
+
+Sportprofil.init(
+
     {
-        id_user: {
+        id: {
             type: DataTypes.INTEGER,
-            primary: true,
-            autoIncrement: true,
+            primaryKey: true,
+            autoIncrement: false,
             allowNull: false,
         },
 
@@ -34,7 +37,7 @@ const Sportprofil = sequelize.define(
         zipcode_club: {
             type: DataTypes.STRING(20),
             validate: {
-                is: /^[0-9]{5}$/,
+                is: "/^[0-9]{5}$/",
         }
         },
 
@@ -46,10 +49,6 @@ const Sportprofil = sequelize.define(
         defeat: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
-        },
-
-        weight: {
-            type: DataTypes.FLOAT,
         },
 
         weight: {
@@ -70,6 +69,8 @@ const Sportprofil = sequelize.define(
 
     },
     {
+        sequelize,
+        modelName: "Sportprofil",
         tableName: "sportprofil",
         timestamps: false,
     }

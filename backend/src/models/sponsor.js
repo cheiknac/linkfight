@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import sequelize from '../database/sequelize/client.js';
 
 const sponsor = sequelize.define(
     "sponsor",
@@ -7,6 +7,11 @@ const sponsor = sequelize.define(
         id_user: {
             type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: false,
+            references: {
+                model: 'users',
+                key: 'id',
+            },      
             allowNull: false,
         },
         

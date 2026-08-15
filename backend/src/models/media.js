@@ -1,12 +1,17 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import sequelize from '../database/sequelize/client.js';
 
 const Media = sequelize.define(
     "Media",
     {
-        id_user: {
+        id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: false,
+            references: {
+                model: 'users',
+                key: 'id',
+            },
             allowNull: false,
         },
 
