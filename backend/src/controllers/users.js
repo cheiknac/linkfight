@@ -29,6 +29,7 @@ import argon2 from "argon2";
           if (!user) {
             return res.status(404).json({ message: "Utilisateur non trouvé" });
           }
+
           res.status(200).json(user);
         } catch (error) {
           console.error(error);
@@ -38,13 +39,29 @@ import argon2 from "argon2";
 
       // Create a new user
       createUser: async (req, res) => {
-        const { id, email, password } = req.body;
+        const { firstname, lastname, email, password, type, birthday, address, zip_code, city, avatar, legals } = req.body;
         try {
+
+          const userExists = await Users.findOne({ 
+            where: { email: email } 
+          });
+          if (userExists !== null) {
+          return res.status(400).json({ error: "Cette utilisateur existe déjà." });
+          }
+
           const hashedPassword = await argon2.hash(password);
           const newUser = await Users.create({ 
-            id,
-            email, 
-            password: hashedPassword
+              firstname,
+              lastname,
+              email,
+              password: hashedPassword,
+              type,
+              birthday,
+              address,
+              zip_code,
+              city,
+              avatar,
+              legals,
            });
           res.status(201).json(newUser);
         } catch (error) {
@@ -60,41 +77,56 @@ import argon2 from "argon2";
       // Update a user by ID
       updateUser: async (req, res) => {
         const { id } = req.params;
-        const { email, password } = req.body;
+        const { password, address, zip_code, city, avatar } = req.body;
+
         try {
           const user = await Users.findByPk(id);
           if (!user) {
             return res.status(404).json({ message: "Utilisateur non trouvé" });
           }
-          user.email = email || user.email;
-          user.password = password || user.password;
+          
+          const hashedPassword = await argon2.hash(password);
+
+          user.password = hashedPassword || user.password;
+          user.address = address || user.address;
+          user.zip_code = zip_code || user.zip_code;
+          user.city = password || user.city;
+          user.avatar = password || user.avatar;
+
           await user.save();
+
           res.status(200).json(user);
         } catch (error) {
           console.error(error);
           res.status(500).json({ message: "Erreur du serveur interne" });
         }
+
+        const { password: undefined, ...userWithoutPassword } = user.toJSON();
+
+        res.json(userWithoutPassword);
+
       },
 
       // Delete a user by ID
       deleteUser: async (req, res) => {
         const { id } = req.params;
         try {
+
           const user = await Users.findByPk(id);
           if (!user) {
             return res.status(404).json({ message: "Utilisateur non trouvé" });
           }
+
           await user.destroy();
           res.status(200).json({ message: "Utilisateur supprimé avec succès" });
         } catch (error) {
+
           console.error(error);
           res.status(500).json({ message: "Erreur du serveur interne" });
         }
       },
 
     };
-
-
 
 
 export default UsersController;

@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import { DataTypes, Model } from 'sequelize';
+import pkg from 'sequelize';
+const { DataTypes, Model } = pkg;
 import sequelize from '../database/sequelize/client.js';
 
 class Media extends Model {}

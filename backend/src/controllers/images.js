@@ -47,7 +47,7 @@ const imagesController = {
     // Create a new image
     async createImage(req, res) {
         try {
-            const { id_user, image_url, description } = req.body;
+            const { image_url } = req.body;
 
             const createdImage = await Images.create({
                 url: image_url,
@@ -70,7 +70,7 @@ const imagesController = {
     async updateImage(req, res) {
         try {
             const { id } = req.params;
-            const { image_url, description } = req.body;
+            const { image_url } = req.body;
 
             const image = await Images.findByPk(id);
 
@@ -88,6 +88,7 @@ const imagesController = {
             res.status(200).json({
                 success: true,
                 data: image,
+                message: "Image modifié avec succès"
             });
         } catch (error) {
             console.error('Erreur lors de la mise à jour de l\'image:', error);

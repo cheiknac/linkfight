@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import Sequelize from 'sequelize';
+import pkg from 'sequelize';
+const { Sequelize } = pkg;
 
 if (!process.env.PG_URL) {
     throw new Error ("La variable d'environnement PG_URL est manquant !");
