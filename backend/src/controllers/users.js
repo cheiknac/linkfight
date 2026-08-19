@@ -39,39 +39,52 @@ import argon2 from "argon2";
 
       // Create a new user
       createUser: async (req, res) => {
-        const { firstname, lastname, email, password, type, birthday, address, zip_code, city, avatar, legals } = req.body;
         try {
+          const {
+            firstname,
+            lastname,
+            email,
+            password,
+            type,
+            birthday,
+            address,
+            zip_code,
+            city,
+            avatar,
+            legals,
+          } = req.body;
 
-          const userExists = await Users.findOne({ 
-            where: { email: email } 
+          const userExists = await Users.findOne({
+            where: { email: email },
           });
-          if (userExists !== null) {
-          return res.status(400).json({ error: "Cette utilisateur existe déjà." });
+
+          if (userExists) {
+            return res.status(400).json({ error: "Cet utilisateur existe déjà." });
           }
 
           const hashedPassword = await argon2.hash(password);
-          const newUser = await Users.create({ 
-              firstname,
-              lastname,
-              email,
-              password: hashedPassword,
-              type,
-              birthday,
-              address,
-              zip_code,
-              city,
-              avatar,
-              legals,
-           });
-          res.status(201).json(newUser);
+
+          const newUser = await Users.create({
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword,
+            type,
+            birthday,
+            address,
+            zip_code,
+            city,
+            avatar,
+            legals,
+          });
+
+          const { password: _password, ...userWithoutPassword } = newUser.toJSON();
+
+          return res.status(201).json(userWithoutPassword);
         } catch (error) {
           console.error(error);
-          res.status(500).json({ message: "Erreur du serveur interne" });
+          return res.status(500).json({ message: "Erreur du serveur interne" });
         }
-
-        const { password: undefined, ...userWithoutPassword } = createdUser.toJSON();
-        
-        res.status(201).json(userWithoutPassword);
       },
 
       // Update a user by ID

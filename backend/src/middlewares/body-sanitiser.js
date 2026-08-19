@@ -15,3 +15,4 @@ export const bodySanitiser = (req, res, next) => {
     next();
 }
 
+export default bodySanitiser;

@@ -10,4 +10,4 @@ const limiter = rateLimit({
   message: 'vous avez dépassé le nombre de requêtes autorisées. Veuillez réessayer plus tard.',
 });
 
-app.use(limiter)
+export default limiter;
