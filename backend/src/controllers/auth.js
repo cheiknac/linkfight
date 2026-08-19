@@ -28,7 +28,7 @@ const authController = {
     }
   },
 
-  login: async (req, res) => {
+login: async (req, res) => {
     try {
       const { email, password } = req.body;
 
@@ -37,16 +37,18 @@ const authController = {
         return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
       }
 
-
       const isPasswordValid = await argon2.verify(user.password, password);
-
       if (!isPasswordValid) {
         return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
       }
 
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      return res.status(200).json({ message: 'Connexion réussie', token });
+      return res.status(200).json({
+        message: 'Connexion réussie',
+        token,
+        slug: user.slug,
+      });
     } catch (error) {
       return res.status(500).json({ message: 'Erreur serveur', error: error.message });
     }

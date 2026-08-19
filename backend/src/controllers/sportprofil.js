@@ -90,7 +90,7 @@ const sportprofilController = {
             const { 
                 biography, 
                 categorie,
-                disciplin,
+                discipline,
                 club,
                 zipcode_club,
                 victory,
@@ -161,6 +161,91 @@ const sportprofilController = {
             res.status(500).json({
                 success: false,
                 message: 'Erreur serveur lors de la suppression du profil sportif.',
+            });
+        }
+    },
+
+        // Get my own sport profile
+    async getMySportprofil(req, res) {
+        try {
+            const sportprofil = await Sportprofil.findByPk(req.user.id, {
+                include: [{ model: Palmares }, { model: Images }],
+            });
+
+            res.status(200).json({
+                success: true,
+                data: sportprofil, // peut être null si pas encore créé
+            });
+        } catch (error) {
+            console.error('Erreur lors de la récupération du profil sportif:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Erreur serveur.',
+            });
+        }
+    },
+
+    // Create or update my own sport profile
+    async upsertMySportprofil(req, res) {
+        try {
+            const userId = req.user.id;
+            const {
+                biography,
+                categorie,
+                discipline,
+                club,
+                zipcode_club,
+                victory,
+                defeat,
+                weight,
+                instagram,
+                tiktok,
+                snapchat,
+            } = req.body;
+
+            let sportprofil = await Sportprofil.findByPk(userId);
+
+            if (!sportprofil) {
+                sportprofil = await Sportprofil.create({
+                    id: userId,
+                    biography,
+                    categorie,
+                    discipline,
+                    club,
+                    zipcode_club,
+                    victory,
+                    defeat,
+                    weight,
+                    instagram,
+                    tiktok,
+                    snapchat,
+                });
+            } else {
+                sportprofil.biography = biography ?? sportprofil.biography;
+                sportprofil.categorie = categorie ?? sportprofil.categorie;
+                sportprofil.discipline = discipline ?? sportprofil.discipline;
+                sportprofil.club = club ?? sportprofil.club;
+                sportprofil.zipcode_club = zipcode_club ?? sportprofil.zipcode_club;
+                sportprofil.victory = victory ?? sportprofil.victory;
+                sportprofil.defeat = defeat ?? sportprofil.defeat;
+                sportprofil.weight = weight ?? sportprofil.weight;
+                sportprofil.instagram = instagram ?? sportprofil.instagram;
+                sportprofil.tiktok = tiktok ?? sportprofil.tiktok;
+                sportprofil.snapchat = snapchat ?? sportprofil.snapchat;
+
+                await sportprofil.save();
+            }
+
+            res.status(200).json({
+                success: true,
+                data: sportprofil,
+                message: 'Profil sportif enregistré avec succès.',
+            });
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour du profil sportif:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Erreur serveur.',
             });
         }
     },

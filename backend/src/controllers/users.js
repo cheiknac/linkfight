@@ -2,6 +2,8 @@ import Users from "../models/users.js";
 import Sportprofil from "../models/Sportprofil.js";
 import Sponsor from "../models/Sponsor.js";
 import Media from "../models/Media.js";
+import Palmares from "../models/Palmares.js";
+import Images from "../models/Images.js";
 
 import argon2 from "argon2";
 import slugify from "slugify";
@@ -25,6 +27,7 @@ const UsersController = {
   getAllUsers: async (req, res) => {
     try {
       const users = await Users.findAll({
+        attributes: { exclude: ['password'] },
         include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
       });
       res.status(200).json(users);
@@ -39,6 +42,7 @@ const UsersController = {
     const { id } = req.params;
     try {
       const user = await Users.findByPk(id, {
+        attributes: { exclude: ['password'] },
         include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
       });
       if (!user) {
@@ -58,7 +62,14 @@ const UsersController = {
     try {
       const user = await Users.findOne({
         where: { slug },
-        include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
+        include: [
+          {
+            model: Sportprofil,
+            include: [{ model: Palmares }, { model: Images }],
+          },
+          { model: Sponsor },
+          { model: Media },
+        ],
       });
 
       if (!user) {
@@ -170,6 +181,16 @@ const UsersController = {
       res.status(200).json({ message: "Utilisateur supprimé avec succès" });
     } catch (error) {
 
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
+
+  getMe: async (req, res) => {
+    try {
+      const { password, ...userWithoutPassword } = req.user.toJSON();
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Erreur du serveur interne" });
     }

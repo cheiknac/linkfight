@@ -83,6 +83,7 @@ export default function Signup() {
                             id="type"
                             value={formData.type}
                             onChange={handleChange}
+                            required
                         >
                             <option value="">-- Sélectionnez votre rôle</option>
                             <option value="sponsor">sponsor</option>

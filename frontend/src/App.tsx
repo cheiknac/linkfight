@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useParams } from 'react-router-dom'
 import './App.css'
 
 // Page frontend
@@ -16,11 +16,17 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path='/profil' element={<Profil />} />
+      <Route path="/profil/:slug" element={<ProfilAvecKey />} />
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/search' element={<Search />} />
     </Routes>
-  )
+  );
+}
+
+function ProfilAvecKey() {
+    const { slug } = useParams();
+    return <Profil key={slug} />;
 }
 
 export default App

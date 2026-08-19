@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/useAuth.tsx';
 import './Login.scss';
 import Header from '../../components/Header/Header.tsx'
 import Footer from '../../components/Footer/Footer.tsx'
 
 
 export default function Login() {
+
+    const { setUser } = useAuth();
 
     const navigate = useNavigate();
 
@@ -39,7 +42,9 @@ export default function Login() {
 
             localStorage.setItem('token', data.token);
 
-            navigate('/profil');
+            setUser(data.user);
+
+            navigate(`/profil/${data.slug}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Une erreur est survenue');
         } finally {
