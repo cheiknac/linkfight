@@ -9,6 +9,9 @@ userRouter
     .post(usersController.createUser);
 
 userRouter
+    .get("/profil/:slug", usersController.getUserBySlug);
+
+userRouter
     .route("/users/:id")
     .get(usersController.getUserById)
     .put(usersController.updateUser)

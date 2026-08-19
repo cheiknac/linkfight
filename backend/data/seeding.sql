@@ -1,10 +1,10 @@
 BEGIN;
 
-INSERT INTO "users" (firstname, lastname, email, password, type, birthday, address, zip_code, city, avatar, legals)
+INSERT INTO "users" (firstname, lastname, email, slug, password, type, birthday, address, zip_code, city, avatar, legals)
 VALUES
-('John', 'Doe', 'john.doe@example.com', 'password123', 'sportif', '1990-01-01', '123 Main St', '12345', 'New York', 'johndoe.jpg', true),
-('Jane', 'Smith', 'jane.smith@example.com', 'password456', 'sponsor', '1992-05-15', '456 Oak Ave', '67890', 'Los Angeles', 'janesmith.jpg', true),
-('Luc', 'Neo', 'lneo@example.com', 'password560', 'media', '1995-09-27', '10 rue du bac', '75000', 'Paris', 'jleo.jpg', true);
+('John', 'Doe', 'john.doe@example.com', 'john-doe', 'password123', 'sportif', '1990-01-01', '123 Main St', '12345', 'New York', 'johndoe.jpg', true),
+('Jane', 'Smith', 'jane.smith@example.com', 'jane-smith', 'password456', 'sponsor', '1992-05-15', '456 Oak Ave', '67890', 'Los Angeles', 'janesmith.jpg', true),
+('Luc', 'Neo', 'lneo@example.com', 'luc-neo', 'password560', 'media', '1995-09-27', '10 rue du bac', '75000', 'Paris', 'jleo.jpg', true);
 
 INSERT INTO "sponsor" (id,company_name, position, phone, website)
 VALUES

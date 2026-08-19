@@ -4,142 +4,177 @@ import Sponsor from "../models/Sponsor.js";
 import Media from "../models/Media.js";
 
 import argon2 from "argon2";
+import slugify from "slugify";
 
-    // Show all users 
-    const UsersController = {
-      getAllUsers: async (req, res) => {
-        try {
-          const users = await Users.findAll({
-            include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
-          });
-          res.status(200).json(users);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: "Erreur du serveur interne" });
-        }
-      },
+// Génère un slug unique en ajoutant un suffixe numérique si besoin
+async function generateUniqueSlug(firstname, lastname) {
+    const base = slugify(`${firstname} ${lastname}`, { lower: true, strict: true });
+    let slug = base;
+    let counter = 1;
 
-    // Show users by ID
-    getUserById: async (req, res) => {
-        const { id } = req.params;
-        try {
-          const user = await Users.findByPk(id, {
-            include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
-          });
-          if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-          }
+    while (await Users.findOne({ where: { slug } })) {
+        slug = `${base}-${counter}`;
+        counter++;
+    }
 
-          res.status(200).json(user);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: "Erreur du serveur interne" });
-        }
-      },
+    return slug;
+}
 
-      // Create a new user
-      createUser: async (req, res) => {
-        try {
-          const {
-            firstname,
-            lastname,
-            email,
-            password,
-            type,
-            birthday,
-            address,
-            zip_code,
-            city,
-            avatar,
-            legals,
-          } = req.body;
+// Show all users 
+const UsersController = {
+  getAllUsers: async (req, res) => {
+    try {
+      const users = await Users.findAll({
+        include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
+      });
+      res.status(200).json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
 
-          const userExists = await Users.findOne({
-            where: { email: email },
-          });
+  // Show users by ID
+  getUserById: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await Users.findByPk(id, {
+        include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
+      });
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
 
-          if (userExists) {
-            return res.status(400).json({ error: "Cet utilisateur existe déjà." });
-          }
+      res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
 
-          const hashedPassword = await argon2.hash(password);
+  // Show a public profile by slug
+  getUserBySlug: async (req, res) => {
+    const { slug } = req.params;
+    try {
+      const user = await Users.findOne({
+        where: { slug },
+        include: [{ model: Sportprofil }, { model: Sponsor }, { model: Media }],
+      });
 
-          const newUser = await Users.create({
-            firstname,
-            lastname,
-            email,
-            password: hashedPassword,
-            type,
-            birthday,
-            address,
-            zip_code,
-            city,
-            avatar,
-            legals,
-          });
+      if (!user) {
+        return res.status(404).json({ message: "Profil introuvable" });
+      }
 
-          const { password: _password, ...userWithoutPassword } = newUser.toJSON();
+      const { password, email, ...publicProfile } = user.toJSON();
 
-          return res.status(201).json(userWithoutPassword);
-        } catch (error) {
-          console.error(error);
-          return res.status(500).json({ message: "Erreur du serveur interne" });
-        }
-      },
+      res.status(200).json(publicProfile);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
 
-      // Update a user by ID
-      updateUser: async (req, res) => {
-        const { id } = req.params;
-        const { password, address, zip_code, city, avatar } = req.body;
+  // Create a new user
+  createUser: async (req, res) => {
+    try {
+      const {
+        firstname,
+        lastname,
+        email,
+        password,
+        type,
+        birthday,
+        address,
+        zip_code,
+        city,
+        avatar,
+        legals,
+      } = req.body;
 
-        try {
-          const user = await Users.findByPk(id);
-          if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-          }
-          
-          const hashedPassword = await argon2.hash(password);
+      const userExists = await Users.findOne({
+        where: { email: email },
+      });
 
-          user.password = hashedPassword || user.password;
-          user.address = address || user.address;
-          user.zip_code = zip_code || user.zip_code;
-          user.city = password || user.city;
-          user.avatar = password || user.avatar;
+      if (userExists) {
+        return res.status(400).json({ error: "Cet utilisateur existe déjà." });
+      }
 
-          await user.save();
+      const hashedPassword = await argon2.hash(password);
+      const slug = await generateUniqueSlug(firstname, lastname);
 
-          res.status(200).json(user);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: "Erreur du serveur interne" });
-        }
+      const newUser = await Users.create({
+        firstname,
+        lastname,
+        email,
+        password: hashedPassword,
+        type,
+        birthday,
+        address,
+        zip_code,
+        city,
+        avatar,
+        legals,
+        slug,
+      });
 
-        const { password: undefined, ...userWithoutPassword } = user.toJSON();
+      const { password: _password, ...userWithoutPassword } = newUser.toJSON();
 
-        res.json(userWithoutPassword);
+      return res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
 
-      },
+  // Update a user by ID
+  updateUser: async (req, res) => {
+    const { id } = req.params;
+    const { password, address, zip_code, city, avatar } = req.body;
 
-      // Delete a user by ID
-      deleteUser: async (req, res) => {
-        const { id } = req.params;
-        try {
+    try {
+      const user = await Users.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
 
-          const user = await Users.findByPk(id);
-          if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-          }
+      if (password) {
+        user.password = await argon2.hash(password);
+      }
+      user.address = address || user.address;
+      user.zip_code = zip_code || user.zip_code;
+      user.city = city || user.city;
+      user.avatar = avatar || user.avatar;
 
-          await user.destroy();
-          res.status(200).json({ message: "Utilisateur supprimé avec succès" });
-        } catch (error) {
+      await user.save();
 
-          console.error(error);
-          res.status(500).json({ message: "Erreur du serveur interne" });
-        }
-      },
+      const { password: _password, ...userWithoutPassword } = user.toJSON();
 
-    };
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
 
+  // Delete a user by ID
+  deleteUser: async (req, res) => {
+    const { id } = req.params;
+    try {
+
+      const user = await Users.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+
+      await user.destroy();
+      res.status(200).json({ message: "Utilisateur supprimé avec succès" });
+    } catch (error) {
+
+      console.error(error);
+      res.status(500).json({ message: "Erreur du serveur interne" });
+    }
+  },
+
+};
 
 export default UsersController;
