@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import EditSportProfilModal from '../../components/editsportprofilmodal/EditSportProfilModal.tsx';
+import { useAuth } from '../../context/useAuth';
 
 import './Profil.scss';
 import Header from '../../components/Header/Header.tsx';
@@ -74,6 +76,10 @@ export default function Profil() {
     const [user, setUser] = useState<UserProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { user: currentUser } = useAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const isOwner = currentUser?.slug === slug;
 
     useEffect(() => {
         fetch(`${API_URL}/profil/${slug}`)
@@ -137,14 +143,21 @@ export default function Profil() {
                     </div>
 
                     <div className="blocContainer">
-                        <div id="customProfil">
-                            <img src={customProfil} alt="Remplir profil combattant" />
-                        </div>
+                        {isOwner && (
+                            <div id="customProfil">
+                                <img
+                                    src={customProfil}
+                                    alt="Remplir profil combattant"
+                                    onClick={() => setIsModalOpen(true)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            </div>
+                        )}
                         <h1>{user.firstname} {user.lastname}</h1>
-                        <p><strong>Age : </strong>{calculateAge(user.birthday)} ans</p>
-                        {sport?.categorie && <p><strong>Catégorie : </strong>{sport.categorie}</p>}
-                        {sport?.discipline && <p><strong>Discipline : </strong>{sport.discipline}</p>}
-                        {sport?.club && <p><strong>Club : </strong>{sport.club}</p>}
+                        <p><span id="strongDesc">Age : </span>{calculateAge(user.birthday)} ans</p>
+                        {sport?.categorie && <p><span id="strongDesc">Catégorie : </span>{sport.categorie}</p>}
+                        {sport?.discipline && <p><span id="strongDesc">Discipline : </span>{sport.discipline}</p>}
+                        {sport?.club && <p><span id="strongDesc">Club : </span>{sport.club}</p>}
                     </div>
 
                     {sport && (
@@ -167,6 +180,15 @@ export default function Profil() {
                     )}
                 </div>
 
+                <div>
+                    <h2>Ajoutez vos palmares</h2>
+                        <img
+                            src={customProfil}
+                            alt="Remplir profil combattant"
+                            style={{ cursor: 'pointer' }}
+                        />
+                    
+                </div>
                 {sport && sport.Palmares && sport.Palmares.length > 0 && (
                     <div className="palmaresContainer">
                         <h2>Palmarès</h2>
@@ -187,6 +209,16 @@ export default function Profil() {
                     </div>
                 )}
 
+                <div>
+                    <h2>Ajoutez vos 6 images</h2>
+                        <img
+                            src={customProfil}
+                            alt="Remplir profil combattant"
+                            style={{ cursor: 'pointer' }}
+                        />
+                    
+                </div>
+
                 {sport && sport.Images && sport.Images.length > 0 && (
                     <div>
                         <h2>Galerie photo</h2>
@@ -198,6 +230,37 @@ export default function Profil() {
                     </div>
                 )}
             </div>
+
+            {isModalOpen && (
+                <EditSportProfilModal
+                    currentData={sport}
+                    onClose={() => setIsModalOpen(false)}
+                    onSuccess={(updatedSport) => {
+                        setUser((prev) => {
+                            if (!prev) return prev;
+
+                            const previousSport = prev.Sportprofil;
+
+                            const mergedSport: Sportprofil = {
+                                biography: updatedSport.biography ?? previousSport?.biography ?? '',
+                                categorie: updatedSport.categorie ?? previousSport?.categorie ?? '',
+                                discipline: updatedSport.discipline ?? previousSport?.discipline ?? '',
+                                club: updatedSport.club ?? previousSport?.club ?? '',
+                                victory: updatedSport.victory ?? previousSport?.victory ?? 0,
+                                defeat: updatedSport.defeat ?? previousSport?.defeat ?? 0,
+                                instagram: updatedSport.instagram ?? previousSport?.instagram ?? '',
+                                tiktok: updatedSport.tiktok ?? previousSport?.tiktok ?? '',
+                                snapchat: updatedSport.snapchat ?? previousSport?.snapchat ?? '',
+                                Palmares: previousSport?.Palmares ?? [],
+                                Images: previousSport?.Images ?? [],
+                            };
+
+                            return { ...prev, Sportprofil: mergedSport };
+                        });
+                        setIsModalOpen(false);
+                    }}
+                />
+            )};
 
             <Footer />
         </div>

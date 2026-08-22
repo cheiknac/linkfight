@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './EditSportProfilModal.scss';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -81,7 +82,7 @@ export default function EditSportProfilModal({ currentData, onClose, onSuccess }
         <div className="modalOverlay" onClick={onClose}>
             <div className="modalContent" onClick={(e) => e.stopPropagation()}>
                 <button className="modalClose" onClick={onClose}>×</button>
-                <h2>Mon profil combattant</h2>
+                <h3>Editer mon profil</h3>
 
                 <form onSubmit={handleSubmit}>
                     <label>Catégorie</label>

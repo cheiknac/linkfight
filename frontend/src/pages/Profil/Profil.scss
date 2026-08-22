@@ -37,7 +37,25 @@
     border: 0.1rem solid #f1f1f1;
     background: #F8F8F8;
     border-radius: 1rem;
+    padding: 1.3rem;
 }
+
+.blocContainer h1 {
+    font-size: 2.5rem;
+    margin-top: 0.6rem;
+    color: #000;
+}
+
+.blocContainer p {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.blocContainer #strongDesc {
+    font-weight: bold;
+}
+
 
 .blocContainer #customProfil {
     width: 100%;
@@ -54,15 +72,16 @@
     color: #fff;
 }
 
-.numberText {
-    font-size: 6rem;
-    font-weight: 900;
-}
-
 .fightNumber {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    text-align: center;
+}
+
+.fightNumber .numberText {
+    font-size: 6rem;
+    font-weight: 900;
     text-align: center;
 }
 
@@ -78,6 +97,7 @@ h2 {
     grid-row: 300px;
     grid-gap: 2rem;
     margin: 2rem 0rem;
+    grid-template-rows: 1fr 1fr;
 }
 
 #avatardBlock {
@@ -89,7 +109,9 @@ h2 {
     grid-column: 2 / 5;
 }
 
-
+.block5 p {
+    margin-top: 1rem;
+}
  /* #avatardBlock {
 
 }

@@ -17,16 +17,25 @@ Sportprofil.init(
         biography: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                notEmpty: true,
+           },            
         },
 
         categorie: {
             type: DataTypes.STRING(100),
             allowNull: false,
+            validate: {
+                notEmpty: true,
+           },
         },
 
         discipline: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                notEmpty: true,
+           },
         },
 
         club: {
@@ -37,8 +46,8 @@ Sportprofil.init(
         zipcode_club: {
             type: DataTypes.STRING(20),
             validate: {
-                is: "/^[0-9]{5}$/",
-        }
+                is: /^[0-9]{5}$/, // Regex pour valider un code postal français à 5 chiffres
+            }
         },
 
         victory: {
