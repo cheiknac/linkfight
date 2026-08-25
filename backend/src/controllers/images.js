@@ -1,10 +1,15 @@
 import Images from '../models/images.js';
+import Sportprofil from '../models/Sportprofil.js';
+
+const MAX_IMAGES = 6;
 
 const imagesController = {
-    // Get all images
-    async getAllImages(req, res) {
+    // Get all images for the connected user's sport profile
+    async getMyImages(req, res) {
         try {
-            const images = await Images.findAll();
+            const images = await Images.findAll({
+                where: { id_sportprofil: req.user.id },
+            });
             res.status(200).json({
                 success: true,
                 count: images.length,
@@ -19,38 +24,26 @@ const imagesController = {
         }
     },
 
-    // Get image by id
-    async getImageById(req, res) {
+    // Upload a new image (Cloudinary) for the connected user
+    async uploadImage(req, res) {
         try {
-            const image = await Images.findByPk(req.params.id);
-
-            if (!image) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Image non trouvée.',
-                });
+            if (!req.file) {
+                return res.status(400).json({ message: 'Aucun fichier reçu.' });
             }
 
-            res.status(200).json({
-                success: true,
-                data: image,
-            });
-        } catch (error) {
-            console.error('Erreur lors de la récupération de l\'image:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Erreur serveur lors de la récupération de l\'image.',
-            });
-        }
-    },
+            const sportprofil = await Sportprofil.findByPk(req.user.id);
+            if (!sportprofil) {
+                return res.status(400).json({ message: "Tu dois d'abord remplir ton profil sportif." });
+            }
 
-    // Create a new image
-    async createImage(req, res) {
-        try {
-            const { image_url } = req.body;
+            const count = await Images.count({ where: { id_sportprofil: req.user.id } });
+            if (count >= MAX_IMAGES) {
+                return res.status(400).json({ message: `Maximum ${MAX_IMAGES} images atteintes.` });
+            }
 
             const createdImage = await Images.create({
-                url: image_url,
+                id_sportprofil: req.user.id,
+                url: req.file.path,
             });
 
             res.status(201).json({
@@ -58,48 +51,15 @@ const imagesController = {
                 data: createdImage,
             });
         } catch (error) {
-            console.error('Erreur lors de la création de l\'image:', error);
+            console.error("Erreur lors de la création de l'image:", error);
             res.status(500).json({
                 success: false,
-                message: 'Erreur serveur lors de la création de l\'image.',
+                message: "Erreur serveur lors de la création de l'image.",
             });
         }
     },
 
-    // Update an image
-    async updateImage(req, res) {
-        try {
-            const { id } = req.params;
-            const { image_url } = req.body;
-
-            const image = await Images.findByPk(id);
-
-            if (!image) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Image non trouvée.',
-                });
-            }
-
-            await image.update({
-                url: image_url,
-            });
-
-            res.status(200).json({
-                success: true,
-                data: image,
-                message: "Image modifié avec succès"
-            });
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour de l\'image:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Erreur serveur lors de la mise à jour de l\'image.',
-            });
-        }
-    },
-
-    // Delete an image
+    // Delete an image (only if it belongs to the connected user)
     async deleteImage(req, res) {
         try {
             const { id } = req.params;
@@ -113,6 +73,13 @@ const imagesController = {
                 });
             }
 
+            if (image.id_sportprofil !== req.user.id) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Vous n'êtes pas autorisé à supprimer cette image.",
+                });
+            }
+
             await image.destroy();
 
             res.status(200).json({
@@ -120,14 +87,13 @@ const imagesController = {
                 message: 'Image supprimée avec succès.',
             });
         } catch (error) {
-            console.error('Erreur lors de la suppression de l\'image:', error);
+            console.error("Erreur lors de la suppression de l'image:", error);
             res.status(500).json({
                 success: false,
-                message: 'Erreur serveur lors de la suppression de l\'image.',
+                message: "Erreur serveur lors de la suppression de l'image.",
             });
         }
-    },  
+    },
 };
-
 
 export default imagesController;

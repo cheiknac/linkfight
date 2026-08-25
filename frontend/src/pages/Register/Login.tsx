@@ -5,6 +5,7 @@ import './Login.scss';
 import Header from '../../components/Header/Header.tsx'
 import Footer from '../../components/Footer/Footer.tsx'
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
 
@@ -27,7 +28,7 @@ export default function Login() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3000/login', {
+            const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -42,7 +43,11 @@ export default function Login() {
 
             localStorage.setItem('token', data.token);
 
-            setUser(data.user);
+            const meResponse = await fetch(`${API_URL}/users/me`, {
+                headers: { Authorization: `Bearer ${data.token}` },
+            });
+            const currentUser = await meResponse.json();
+            setUser(currentUser);
 
             navigate(`/profil/${data.slug}`);
         } catch (err) {

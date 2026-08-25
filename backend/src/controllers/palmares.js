@@ -1,10 +1,13 @@
 import Palmares from "../models/palmares.js";
+import Sportprofil from "../models/Sportprofil.js";
 
 const palmaresController = {
-    // Get all palmares
-    async getAllPalmares(req, res) {
+    // Get all palmares for the connected user's sport profile
+    async getMyPalmares(req, res) {
         try {
-            const palmares = await Palmares.findAll();
+            const palmares = await Palmares.findAll({
+                where: { id_sportprofil: req.user.id },
+            });
             res.status(200).json({
                 success: true,
                 count: palmares.length,
@@ -19,43 +22,27 @@ const palmaresController = {
         }
     },
 
-    // Get palmares by id
-    async getPalmaresById(req, res) {
-        try {
-            const palmares = await Palmares.findByPk(req.params.id);
-
-            if (!palmares) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Palmarès non trouvé.',
-                });
-            }
-
-            res.status(200).json({
-                success: true,
-                data: palmares,
-            });
-        } catch (error) {
-            console.error('Erreur lors de la récupération du palmarès:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Erreur serveur lors de la récupération du palmarès.',
-            });
-        }
-    },
-
-    // Create a new palmares
+    // Create a new palmares for the connected user
     async createPalmares(req, res) {
         try {
             const { title, discipline, city, country, date, result } = req.body;
 
+            const sportprofil = await Sportprofil.findByPk(req.user.id);
+            if (!sportprofil) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Tu dois d'abord remplir ton profil sportif.",
+                });
+            }
+
             const createdPalmares = await Palmares.create({
+                id_sportprofil: req.user.id,
                 title,
                 discipline,
                 city,
                 country,
                 date,
-                result
+                result,
             });
 
             res.status(201).json({
@@ -72,7 +59,7 @@ const palmaresController = {
         }
     },
 
-    // Update a palmares by ID
+    // Update a palmares by ID (only if it belongs to the connected user)
     async updatePalmares(req, res) {
         try {
             const { id } = req.params;
@@ -87,12 +74,19 @@ const palmaresController = {
                 });
             }
 
-            palmares.title = title || palmares.title;
-            palmares.discipline = discipline || palmares.discipline;
-            palmares.city = city || palmares.city;
-            palmares.country = country || palmares.country;
-            palmares.date = date || palmares.date;
-            palmares.result = result || palmares.result;
+            if (palmares.id_sportprofil !== req.user.id) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Vous n'êtes pas autorisé à modifier ce palmarès.",
+                });
+            }
+
+            palmares.title = title ?? palmares.title;
+            palmares.discipline = discipline ?? palmares.discipline;
+            palmares.city = city ?? palmares.city;
+            palmares.country = country ?? palmares.country;
+            palmares.date = date ?? palmares.date;
+            palmares.result = result ?? palmares.result;
 
             await palmares.save();
 
@@ -110,7 +104,7 @@ const palmaresController = {
         }
     },
 
-    // Delete a palmares by ID
+    // Delete a palmares by ID (only if it belongs to the connected user)
     async deletePalmares(req, res) {
         try {
             const { id } = req.params;
@@ -121,6 +115,13 @@ const palmaresController = {
                 return res.status(404).json({
                     success: false,
                     message: 'Palmarès non trouvé.',
+                });
+            }
+
+            if (palmares.id_sportprofil !== req.user.id) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Vous n'êtes pas autorisé à supprimer ce palmarès.",
                 });
             }
 

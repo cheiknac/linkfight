@@ -9,13 +9,23 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
+const avatarStorage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'linkfight/avatars',
         allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        transformation: [{ width: 400, height: 500, crop: 'fill', gravity: 'face' }],
+        transformation: [{ width: 500, height: 500, crop: 'fill', gravity: 'face' }],
     },
 });
 
-export const upload = multer({ storage });
+const galleryStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'linkfight/gallery',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+        transformation: [{ width: 1000, height: 1000, crop: 'limit' }],
+    },
+});
+
+export const upload = multer({ storage: avatarStorage });
+export const uploadGallery = multer({ storage: galleryStorage });
