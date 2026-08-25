@@ -1,56 +1,55 @@
 import { useState } from "react";
-import './EditSportAvatarModal.scss';
+import './editssportavatarmodal.scss';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-interface userData {
-    avatar?: string;
-}
 
 interface Props {
-    currentData: userData | null;
     onClose: () => void;
-    onSuccess: (updatedSport: userData) => void;
+    onSuccess: (avatar: string) => void;
 }
 
-export default function EditSportAvatarModal({ currentData, onClose, onSuccess }: Props) {
-    const [formData, setFormData] = useState<userData>({
-        avatar: currentData?.avatar || '',
-    });
+export default function EditSportAvatarModal({ onClose, onSuccess }: Props) {
+    const [file, setFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const selected = e.target.files?.[0];
+        if (!selected) return;
+        setFile(selected);
+        setPreview(URL.createObjectURL(selected));
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);
+
+        if (!file) {
+            setError('Sélectionne une image.');
+            return;
+        }
+
         setIsSaving(true);
 
         try {
             const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('avatar', file);
 
-            const response = await fetch(`${API_URL}/sportprofil/me/avatar`, {
+            const response = await fetch(`${API_URL}/users/me/avatar`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update sport avatar');
+                throw new Error("Échec de l'envoi de l'image.");
             }
 
-            const updatedSport = await response.json();
-            onSuccess(updatedSport);
+            const data = await response.json();
+            onSuccess(data.avatar);
             onClose();
         } catch (err) {
             setError((err as Error).message);
@@ -59,32 +58,24 @@ export default function EditSportAvatarModal({ currentData, onClose, onSuccess }
         }
     }
 
-
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Edit Sport Avatar</h2>
+                <h2>Changer ma photo de profil</h2>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        Avatar URL:
-                        <input
-                            type="text"
-                            name="avatar"
-                            value={formData.avatar}
-                            onChange={handleChange}
-                        />
-                    </label>
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
+                    {preview && <img src={preview} alt="Aperçu" style={{ width: 150, marginTop: 10 }} />}
                     <div className="modal-actions">
                         <button type="submit" disabled={isSaving}>
-                            {isSaving ? 'Saving...' : 'Save'}
+                            {isSaving ? 'Envoi...' : 'Enregistrer'}
                         </button>
                         <button type="button" onClick={onClose} disabled={isSaving}>
-                            Cancel
+                            Annuler
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     );
-}  
+}

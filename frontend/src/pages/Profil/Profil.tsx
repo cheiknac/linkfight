@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditSportProfilModal from '../../components/editsportprofilmodal/EditSportProfilModal.tsx';
+import EditSportAvatarModal from '../../components/editssportavatarmodal/editssportavatarmodal.tsx';
 import { useAuth } from '../../context/useAuth';
 
 import './Profil.scss';
@@ -78,6 +79,7 @@ export default function Profil() {
     const [error, setError] = useState<string | null>(null);
     const { user: currentUser } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
     const isOwner = currentUser?.slug === slug;
 
@@ -120,7 +122,11 @@ export default function Profil() {
             <div id="pageContainer">
                 <div id="headContainer">
                     <div id="avatardBlock">
-                        <div id="profilPicture">
+                        <div
+                            id="profilPicture"
+                            onClick={() => isOwner && setIsAvatarModalOpen(true)}
+                            style={isOwner ? { cursor: 'pointer' } : undefined}
+                        >
                             {user.avatar && <img src={user.avatar} alt={`${user.firstname} ${user.lastname}`} />}
                         </div>
                         <div id="socialProfil">
@@ -179,16 +185,18 @@ export default function Profil() {
                         </>
                     )}
                 </div>
+                
+                {isOwner && (
+                    <div id="palmaresAddContainer">
+                        <h2>Ajoutez vos palmares</h2>
+                            <img
+                                src={customProfil}
+                                alt="Remplir profil combattant"
+                                style={{ cursor: 'pointer' }}
+                            />
+                    </div>
+                )}
 
-                <div>
-                    <h2>Ajoutez vos palmares</h2>
-                        <img
-                            src={customProfil}
-                            alt="Remplir profil combattant"
-                            style={{ cursor: 'pointer' }}
-                        />
-                    
-                </div>
                 {sport && sport.Palmares && sport.Palmares.length > 0 && (
                     <div className="palmaresContainer">
                         <h2>Palmarès</h2>
@@ -209,15 +217,17 @@ export default function Profil() {
                     </div>
                 )}
 
-                <div>
-                    <h2>Ajoutez vos 6 images</h2>
-                        <img
-                            src={customProfil}
-                            alt="Remplir profil combattant"
-                            style={{ cursor: 'pointer' }}
-                        />
-                    
-                </div>
+                {isOwner && (
+                    <div id="galleryAddContainer">
+                        <h2>Ajoutez vos 6 images</h2>
+                            <img
+                                src={customProfil}
+                                alt="Remplir profil combattant"
+                                style={{ cursor: 'pointer' }}
+                            />
+                        
+                    </div>
+                )}
 
                 {sport && sport.Images && sport.Images.length > 0 && (
                     <div>
@@ -260,7 +270,17 @@ export default function Profil() {
                         setIsModalOpen(false);
                     }}
                 />
-            )};
+            )}
+
+            {isAvatarModalOpen && (
+                <EditSportAvatarModal
+                        onClose={() => setIsAvatarModalOpen(false)}
+                        onSuccess={(newAvatar: string) => {
+                        setUser((prev) => (prev ? { ...prev, avatar: newAvatar } : prev));
+                        setIsAvatarModalOpen(false);
+                    }}
+                />
+            )}
 
             <Footer />
         </div>

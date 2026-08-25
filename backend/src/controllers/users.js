@@ -7,6 +7,7 @@ import Images from "../models/Images.js";
 
 import argon2 from "argon2";
 import slugify from "slugify";
+import { upload } from '../config/cloudinary.js';
 
 // Génère un slug unique en ajoutant un suffixe numérique si besoin
 async function generateUniqueSlug(firstname, lastname) {
@@ -195,6 +196,25 @@ const UsersController = {
       res.status(500).json({ message: "Erreur du serveur interne" });
     }
   },
+
+    uploadAvatar: [
+    upload.single('avatar'),
+    async (req, res) => {
+      try {
+        if (!req.file) {
+          return res.status(400).json({ message: 'Aucun fichier reçu' });
+        }
+
+        req.user.avatar = req.file.path;
+        await req.user.save();
+
+        res.status(200).json({ avatar: req.user.avatar });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur serveur' });
+      }
+    },
+  ],
 
 };
 

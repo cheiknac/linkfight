@@ -6,7 +6,8 @@ import checkOwnership from '../middlewares/checkOwnership.js';
 const userRouter = Router();
 
 userRouter
-    .get('/users/me', authMiddleware, usersController.getMe);
+    .get('/users/me', authMiddleware, usersController.getMe)
+    .put('/users/me/avatar', authMiddleware, usersController.uploadAvatar);
 
 userRouter
     .route("/users")
