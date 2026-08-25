@@ -23,7 +23,7 @@ const galleryStorage = new CloudinaryStorage({
     params: {
         folder: 'linkfight/gallery',
         allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        transformation: [{ width: 1000, height: 1000, crop: 'limit' }],
+        transformation: [{ width: 500, height: 300, crop: 'limit' }],
     },
 });
 

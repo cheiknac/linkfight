@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditSportProfilModal from '../../components/editsportprofilmodal/EditSportProfilModal.tsx';
 import EditSportAvatarModal from '../../components/editssportavatarmodal/editssportavatarmodal.tsx';
+import EditPalmaresModal from '../../components/editPalmaresModal/EditPalmaresModal.tsx';
+import ImageGallery from '../../components/imageGallery/ImageGallery.tsx';
 import { useAuth } from '../../context/useAuth';
 
 import './Profil.scss';
@@ -80,6 +82,7 @@ export default function Profil() {
     const { user: currentUser } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+    const [editingPalmares, setEditingPalmares] = useState<Palmares | null | undefined>(undefined);
 
     const isOwner = currentUser?.slug === slug;
 
@@ -115,6 +118,49 @@ export default function Profil() {
     }
 
     const sport = user.Sportprofil;
+
+    function handlePalmaresSuccess(savedPalmares: Palmares) {
+        setUser((prev) => {
+            if (!prev || !prev.Sportprofil) return prev;
+
+            const existingIndex = prev.Sportprofil.Palmares.findIndex((p) => p.id === savedPalmares.id);
+            const updatedList =
+                existingIndex >= 0
+                    ? prev.Sportprofil.Palmares.map((p, i) => (i === existingIndex ? savedPalmares : p))
+                    : [...prev.Sportprofil.Palmares, savedPalmares];
+
+            return {
+                ...prev,
+                Sportprofil: { ...prev.Sportprofil, Palmares: updatedList },
+            };
+        });
+        setEditingPalmares(undefined);
+    }
+
+    async function handlePalmaresDelete(id: number) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/palmares/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) throw new Error('Échec de la suppression.');
+
+            setUser((prev) => {
+                if (!prev || !prev.Sportprofil) return prev;
+                return {
+                    ...prev,
+                    Sportprofil: {
+                        ...prev.Sportprofil,
+                        Palmares: prev.Sportprofil.Palmares.filter((p) => p.id !== id),
+                    },
+                };
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <div>
@@ -185,60 +231,72 @@ export default function Profil() {
                         </>
                     )}
                 </div>
-                
+                <h2 className="palmaresTitle">Palmarès</h2>
                 {isOwner && (
                     <div id="palmaresAddContainer">
                         <h2>Ajoutez vos palmares</h2>
-                            <img
-                                src={customProfil}
-                                alt="Remplir profil combattant"
-                                style={{ cursor: 'pointer' }}
-                            />
+                        <img
+                            src={customProfil}
+                            alt="Ajouter un palmarès"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => setEditingPalmares(null)}
+                        />
                     </div>
                 )}
-
+                
                 {sport && sport.Palmares && sport.Palmares.length > 0 && (
                     <div className="palmaresContainer">
-                        <h2>Palmarès</h2>
+                       
                         {sport.Palmares.map((p) => (
                             <div className="expContainer" key={p.id}>
-                                <div>
-                                    <h4>{p.title}</h4>
-                                    <p><strong>Discipline : </strong>{p.discipline}</p>
-                                    <p><strong>Lieu : </strong>{p.city}{p.country ? `, ${p.country}` : ''}</p>
-                                    <p><strong>Date : </strong>{formatDate(p.date)}</p>
-                                    <p><strong>Résultat : </strong>{p.result}</p>
+                                <div className="expDetails">
+                                    <div className="expTitle">
+                                        <img src={Trophy} width="100px" alt="trophée" />
+                                        <h3>{p.title}</h3>
+                                    </div>
+                                    <p><strong><span id="strongDesc">Discipline :</span> </strong>{p.discipline}</p>
+                                    <p><strong><span id="strongDesc">Lieu :</span> </strong>{p.city}{p.country ? `, ${p.country}` : ''}</p>
+                                    <p><strong><span id="strongDesc">Date :</span> </strong>{formatDate(p.date)}</p>
+                                    <p><strong><span id="strongDesc">Résultat :</span> </strong>{p.result}</p>
                                 </div>
-                                <div>
-                                    <img src={Trophy} width="100px" alt="trophée" />
-                                </div>
+
+                                {isOwner && (
+                                    <div className="palmaresActions">
+                                        <img
+                                            src={customProfil}
+                                            alt="Modifier ce palmarès"
+                                            style={{ cursor: 'pointer', width: '24px' }}
+                                            onClick={() => setEditingPalmares(p)}
+                                        />
+                                        <button
+                                            onClick={() => handlePalmaresDelete(p.id)}
+                                            aria-label="Supprimer ce palmarès"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
                 )}
 
-                {isOwner && (
-                    <div id="galleryAddContainer">
-                        <h2>Ajoutez vos 6 images</h2>
-                            <img
-                                src={customProfil}
-                                alt="Remplir profil combattant"
-                                style={{ cursor: 'pointer' }}
-                            />
-                        
-                    </div>
-                )}
-
-                {sport && sport.Images && sport.Images.length > 0 && (
-                    <div>
-                        <h2>Galerie photo</h2>
-                        <div className="galleryContainer">
-                            {sport.Images.map((img) => (
-                                <img key={img.id} src={img.url} alt="Photo galerie" />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                <div id="galleryAddContainer">
+                    <h2>Galerie photo</h2>
+                    <ImageGallery
+                        images={sport?.Images ?? []}
+                        isOwner={isOwner}
+                        onChange={(newImages) => {
+                            setUser((prev) => {
+                                if (!prev || !prev.Sportprofil) return prev;
+                                return {
+                                    ...prev,
+                                    Sportprofil: { ...prev.Sportprofil, Images: newImages },
+                                };
+                            });
+                        }}
+                    />
+                </div>
             </div>
 
             {isModalOpen && (
@@ -274,11 +332,19 @@ export default function Profil() {
 
             {isAvatarModalOpen && (
                 <EditSportAvatarModal
-                        onClose={() => setIsAvatarModalOpen(false)}
-                        onSuccess={(newAvatar: string) => {
+                    onClose={() => setIsAvatarModalOpen(false)}
+                    onSuccess={(newAvatar: string) => {
                         setUser((prev) => (prev ? { ...prev, avatar: newAvatar } : prev));
                         setIsAvatarModalOpen(false);
                     }}
+                />
+            )}
+
+            {editingPalmares !== undefined && (
+                <EditPalmaresModal
+                    currentData={editingPalmares}
+                    onClose={() => setEditingPalmares(undefined)}
+                    onSuccess={handlePalmaresSuccess}
                 />
             )}
 
