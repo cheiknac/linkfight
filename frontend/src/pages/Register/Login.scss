@@ -63,3 +63,11 @@ p {
 #formLogin .ppBox a {
     color: #066486;
 }
+
+
+@media screen and (max-width: 460px) {
+
+    #formLogin {
+        width: 90%;
+    }
+}

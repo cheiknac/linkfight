@@ -64,3 +64,20 @@ p {
 #formRegister .ppBox a {
     color: #066486;
 }
+
+
+@media screen and (max-width: 460px) {
+
+    #formRegister {
+        width: 90%;
+    }
+
+    #titleRegister {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    #titleRegister h1 {
+        font-size: 3rem;
+    }
+}

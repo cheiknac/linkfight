@@ -26,3 +26,21 @@
     font-weight: 300;
     font-size: 0.9rem;
 }
+
+
+@media screen and (max-width: 460px) {
+  #footerContainer {
+    padding: 4rem 0rem 1rem 0rem;
+  }
+
+  .footerNav {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footerNav a {
+    margin-bottom: 1rem;
+  }
+
+}

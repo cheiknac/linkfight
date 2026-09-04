@@ -6,3 +6,11 @@
 #footerContainer {
   width: 100%;
 }
+
+
+@media screen and (max-width: 460px) {
+  #root {
+    width: 100%;
+    margin: 0
+  }
+}
