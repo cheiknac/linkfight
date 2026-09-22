@@ -8,14 +8,14 @@
 }
 
 #avatardBlock #profilPicture {
-    width: 400px;
-    height: 500px;
-    min-height: 27rem;
-    background: #000;
-    border-radius: 1.5rem;
+    width: 100%;
+    min-height: 30rem; // ou une hauteur fixe, ex: height: 25rem — à ajuster selon ton design
+    aspect-ratio: 1 / 1; // ou une hauteur fixe, ex: height: 25rem — à ajuster selon ton design
     background: url('../../assets/mmatemplate.jpg') no-repeat center center;
     background-size: cover;
+    border-radius: 1.5rem 1.5rem 0rem 0rem;
 }
+
 
 #avatardBlock #socialProfil {
     width: 100%;
@@ -23,7 +23,6 @@
     background: #0A4E68;
     margin-top: -1.5rem;
     position: relative;
-    z-index: -1000;
     border-radius: 0rem 0rem 1.5rem 1.5rem;
 }
 
@@ -38,7 +37,6 @@
 }
 
 .blocContainer {
-    padding: 3rem;
     border: 0.1rem solid #f1f1f1;
     background: #F8F8F8;
     border-radius: 1rem;
@@ -117,6 +115,14 @@ h2 {
 
 .block5 p {
     margin-top: 1rem;
+}
+
+#nameUppercase {
+    text-transform: uppercase;
+}
+
+#firstnameCapitalized {
+    text-transform: capitalize;
 }
 
 
@@ -207,11 +213,6 @@ h2 {
         display: flex;
         flex-direction: column;
 
-    }
-
-    #avatardBlock #profilPicture img {
-        width: 100%;
-        height: 100%;
     }
 
     #avatardBlock #profilPicture {

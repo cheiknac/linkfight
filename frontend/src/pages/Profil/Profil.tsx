@@ -39,6 +39,7 @@ interface Sportprofil {
     club: string;
     victory: number;
     defeat: number;
+    weight: number;
     instagram: string;
     tiktok: string;
     snapchat: string;
@@ -171,10 +172,11 @@ export default function Profil() {
                         <div
                             id="profilPicture"
                             onClick={() => isOwner && setIsAvatarModalOpen(true)}
-                            style={isOwner ? { cursor: 'pointer' } : undefined}
-                        >
-                            {user.avatar && <img src={user.avatar} alt={`${user.firstname} ${user.lastname}`} />}
-                        </div>
+                            style={{
+                                ...(isOwner ? { cursor: 'pointer' } : {}),
+                                ...(user.avatar ? { backgroundImage: `url(${user.avatar})` } : {}),
+                            }}
+                        />
                         <div id="socialProfil">
                             {sport?.snapchat && (
                                 <a href={sport.snapchat} target="_blank" rel="noopener noreferrer">
@@ -205,11 +207,12 @@ export default function Profil() {
                                 />
                             </div>
                         )}
-                        <h1>{user.firstname} {user.lastname}</h1>
+                        <h1><span id="firstnameCapitalized">{user.firstname}</span> <span id="nameUppercase">{user.lastname}</span></h1>
                         <p><span id="strongDesc">Age : </span>{calculateAge(user.birthday)} ans</p>
                         {sport?.categorie && <p><span id="strongDesc">Catégorie : </span>{sport.categorie}</p>}
                         {sport?.discipline && <p><span id="strongDesc">Discipline : </span>{sport.discipline}</p>}
                         {sport?.club && <p><span id="strongDesc">Club : </span>{sport.club}</p>}
+                        {sport?.weight && <p><span id="strongDesc">Poids : </span>{sport.weight} kg</p>}
                     </div>
 
                     {sport && (
@@ -316,6 +319,7 @@ export default function Profil() {
                                 club: updatedSport.club ?? previousSport?.club ?? '',
                                 victory: updatedSport.victory ?? previousSport?.victory ?? 0,
                                 defeat: updatedSport.defeat ?? previousSport?.defeat ?? 0,
+                                weight: updatedSport.weight ?? previousSport?.weight ?? 0,
                                 instagram: updatedSport.instagram ?? previousSport?.instagram ?? '',
                                 tiktok: updatedSport.tiktok ?? previousSport?.tiktok ?? '',
                                 snapchat: updatedSport.snapchat ?? previousSport?.snapchat ?? '',
