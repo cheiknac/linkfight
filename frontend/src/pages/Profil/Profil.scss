@@ -134,6 +134,8 @@ h2 {
     justify-content: flex-start;
     align-items: center;
     margin-top: 1rem;
+    align-items: self-start;
+    
 }
 .palmaresTitle {
     font-size: 2.5rem;
@@ -223,6 +225,24 @@ h2 {
     .galleryContainer {
         display: flex;
         flex-direction: column;
+    }
+
+    .palmaresContainer .expTitle {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .palmaresActions {
+        display: block;
+        text-align: center;
+    }
+
+    .palmaresActions button {
+        margin-top: 0.5rem;
+    }
+
+    .expContainer {
+        padding: 1.5rem;
     }
 
 
