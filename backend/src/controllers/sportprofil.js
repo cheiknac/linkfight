@@ -1,6 +1,9 @@
+import pkg from "sequelize";
+const { Op } = pkg;
 import Sportprofil from "../models/Sportprofil.js";
 import Palmares from "../models/palmares.js";
 import Images from "../models/images.js";
+import Users from "../models/users.js";
 
 const sportprofilController = {
     // Get all sport profiles
@@ -20,6 +23,77 @@ const sportprofilController = {
             res.status(500).json({
                 success: false,
                 message: 'Erreur serveur lors de la récupération des profils sportifs.',
+            });
+        }
+    },
+
+    // Search sport profiles with filters
+    async searchSportprofils(req, res) {
+        try {
+            const {
+                name,
+                discipline,
+                club,
+                weightMin,
+                weightMax,
+                victoryMin,
+                defeatMax,
+            } = req.query;
+
+            const sportprofilWhere = {};
+
+            if (discipline) {
+                sportprofilWhere.discipline = { [Op.iLike]: `%${discipline}%` };
+            }
+
+            if (club) {
+                sportprofilWhere.club = { [Op.iLike]: `%${club}%` };
+            }
+
+            if (weightMin || weightMax) {
+                sportprofilWhere.weight = {};
+                if (weightMin) sportprofilWhere.weight[Op.gte] = parseFloat(weightMin);
+                if (weightMax) sportprofilWhere.weight[Op.lte] = parseFloat(weightMax);
+            }
+
+            if (victoryMin) {
+                sportprofilWhere.victory = { [Op.gte]: parseInt(victoryMin, 10) };
+            }
+
+            if (defeatMax) {
+                sportprofilWhere.defeat = { [Op.lte]: parseInt(defeatMax, 10) };
+            }
+
+            const usersWhere = {};
+
+            if (name) {
+                usersWhere[Op.or] = [
+                    { firstname: { [Op.iLike]: `%${name}%` } },
+                    { lastname: { [Op.iLike]: `%${name}%` } },
+                ];
+            }
+
+            const sportprofils = await Sportprofil.findAll({
+                where: sportprofilWhere,
+                include: [
+                    {
+                        model: Users,
+                        where: Object.keys(usersWhere).length ? usersWhere : undefined,
+                        attributes: ["id", "firstname", "lastname", "avatar"],
+                    },
+                ],
+            });
+
+            res.status(200).json({
+                success: true,
+                count: sportprofils.length,
+                data: sportprofils,
+            });
+        } catch (error) {
+            console.error('Erreur lors de la recherche des profils sportifs:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Erreur serveur lors de la recherche des profils sportifs.',
             });
         }
     },
@@ -165,7 +239,7 @@ const sportprofilController = {
         }
     },
 
-        // Get my own sport profile
+    // Get my own sport profile
     async getMySportprofil(req, res) {
         try {
             const sportprofil = await Sportprofil.findByPk(req.user.id, {

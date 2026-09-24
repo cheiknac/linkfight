@@ -1,0 +1,130 @@
+#filterContainer {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.filterForm {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    padding: 2.5rem;
+    background: #F8F8F8;
+    border-radius: 1rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.filterField {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        margin-top: 1.2rem;
+        margin-bottom: 0.5rem;
+        margin-left: 1.3rem;
+    }
+
+    input,
+    select {
+        padding: 0.8rem;
+        padding-left: 1.3rem;
+        border: 1px solid #0990c1;
+        border-radius: 50px;
+        font-size: 1rem;
+    }
+}
+
+.filterFieldRange {
+    .filterRangeInputs {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+
+        input {
+            flex: 1;
+        }
+
+        span {
+            color: #0990c1;
+            font-weight: bold;
+        }
+    }
+}
+
+.filterActions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    button {
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        cursor: pointer;
+        border: 1px solid #0990c1;
+        transition: opacity 0.2s ease;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        &:hover:not(:disabled) {
+            opacity: 0.85;
+        }
+    }
+}
+
+.filterSubmit {
+    background: #0990c1;
+    color: #fff;
+}
+
+.filterReset {
+    background: transparent;
+    color: #066486;
+}
+
+.filterError {
+    text-align: center;
+    color: #c0392b;
+    margin-top: 1rem;
+}
+
+.filterResults {
+    width: 90%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 6rem;
+}
+
+.profilCard {
+    background: #F8F8F8;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #066486;
+    }
+
+    p {
+        text-align: center;
+        margin: 0.3rem 0;
+        font-size: 0.9rem;
+    }
+}

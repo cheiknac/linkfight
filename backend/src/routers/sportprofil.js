@@ -16,11 +16,15 @@ sportProfilRouter
     .get(sportProfilController.getAllSportprofils)
     .post(sportProfilController.createSportprofil);
 
+sportProfilRouter.get("/sportprofil/search", sportProfilController.searchSportprofils);
+
 sportProfilRouter
     .route("/sportprofil/:id")
     .get(sportProfilController.getSportprofilById)
     .put(sportProfilController.updateSportprofil)
     .delete(sportProfilController.deleteSportprofil);
+
+
 
 
 export default sportProfilRouter;
